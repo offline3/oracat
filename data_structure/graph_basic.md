@@ -63,10 +63,147 @@
 
 使用邻接矩阵表示图时，图的空间复杂度为o(v^2)，边的增删查改的时间复杂度为o(1)。可见，使用邻接矩阵表示图，能够快速的访问边，但当图中的边比较稀疏时，图的空间复杂度始终为o(v^2)。因此，邻接矩阵通常不适用于稀疏图。
 
+邻接矩阵代码示例：
+
+```c++
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class Graph{
+public:
+    // 构造函数，生成一个v*v的二维数组，v为顶点数量
+    Graph(int v){
+        for(int i = 0 ;i < v; i++){
+            adjMatrix.push_back(vector<int>(v,0));
+        }
+    }
+    // 打印图
+    void print(){
+        for(int i = 0; i < adjMatrix.size(); i++){
+            for(int j = 0; j < adjMatrix.size(); j++)
+                cout << adjMatrix[i][j] << " ";
+            cout << "\n";
+        }
+    }
+
+    // 设置点i到点j的边的权重，假设图为有向有权图
+    void set_edge(int i,int j, float w){
+       adjMatrix[i][j] = w;
+    }
+    // 删除边
+    void del_edge(int i, int j){
+        set_edge(i,j,0);
+    }
+private:
+    vector<vector<int> > adjMatrix;
+};
+```
+
+当使用如上定义的邻接矩阵表示下图时，
+
+![image-20210626104516002](https://void-pointer-imgsubmit.oss-cn-shanghai.aliyuncs.com/img/image-20210626104516002.png)
+
+```c++
+int main(){
+    Graph G(4);
+    G.set_edge(0,1,10);
+    G.set_edge(0,2,3);
+    G.set_edge(0,3,2);
+    G.set_edge(1,3,7);
+    G.set_edge(2,3,6);
+    G.print();
+}
+```
+
+
+
 **邻接表**
 
 在邻接表，每个顶点都有对应的一个序列容器，当点`i`与点`j`有边时，便将点`j`放入到点`i`对应的序列容器中。如下图为有向图的邻接表表示方法。
 
 ![image-20210625213307796](https://void-pointer-imgsubmit.oss-cn-shanghai.aliyuncs.com/img/image-20210625213307796.png)
 
-使用邻接表表示图时，图的空间复杂度为o(|v|+|e|)，边的访问时间复杂度为o(v)。当图边数密集时，最糟情况下空间复杂度可为o(v^2)，因此，邻接表通常更适用于表示稀疏图。
+使用邻接表表示图时，图的空间复杂度为o(|v|+|e|)，边的访问时间复杂度为o(v)。当图边数密集时，最糟情况下空间复杂度可为o(v^2)(如完全图，边的数量为`v*(v-1)`，因此，邻接表通常更适用于表示稀疏图。
+
+邻接表示例代码
+
+```c++
+#include <iostream>
+#include <map>
+#include <list>
+using namespace std;
+
+struct edge
+{
+    int node; // 边的一个顶点
+    int weighted; // 边的权重
+    edge(int n, int w){
+        node = n;
+        weighted = w;
+    }
+};
+
+class Graph{
+public:
+    Graph(){}
+
+    // 打印图
+    void print(){
+        for(auto itr = adjList.begin(); itr != adjList.end(); itr++){
+            cout << "vertex: " << itr->first << "->";
+            for(auto itrl = itr->second.begin(); itrl != itr->second.end(); itrl++){
+                cout << "{vertex:" << itrl->node << " weighted: " << itrl->weighted << "} ";
+            }
+            cout << "\n";
+        }
+    }
+
+    // 设置点i到点j的边的权重，假设图为有向有权图
+    void add_edge(int i, int j ,int w){
+        adjList[i].push_back(edge(j,w));
+    }
+
+    void del_edge(int i, int j){
+        list<edge>::iterator itr;
+        for(itr = adjList[i].begin(); itr != adjList[i].end(); itr++){ //边的访问需要遍历边集，因此时间复杂度为o(n)
+            if(itr->node == j){
+                cout << "remove edge vertex" << i << "->" << "vertex" <<j << "\n";
+                adjList[i].erase(itr);
+                break;
+            }
+        }
+    }
+private:
+    map<int,list<edge> > adjList; // 使用链表存储边集，方便增删
+};
+```
+
+同理，使用邻接表表示上面那张图时
+
+```c++
+int main(){
+    Graph G;
+    G.add_edge(0,1,10);
+    G.add_edge(0,2,3);
+    G.add_edge(0,3,2);
+    G.add_edge(1,3,7);
+    G.add_edge(2,3,6);
+    G.print();
+    G.del_edge(0,2);
+    G.print();
+}
+```
+
+输出
+
+```
+vertex: 0->{vertex:1 weighted: 10} {vertex:2 weighted: 3} {vertex:3 weighted: 2}
+vertex: 1->{vertex:3 weighted: 7}
+vertex: 2->{vertex:3 weighted: 6}
+remove edge vertex0->vertex2
+vertex: 0->{vertex:1 weighted: 10} {vertex:3 weighted: 2}
+vertex: 1->{vertex:3 weighted: 7}
+vertex: 2->{vertex:3 weighted: 6}
+```
+
