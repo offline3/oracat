@@ -11,13 +11,20 @@ public:
         adjList[i].push_back(j);
     }
 
-    void DFS(int node){
+    void DFSUtil(int node){
         visit[node] = true;
         cout << node << " ";
         for(auto itr = adjList[node].begin(); itr != adjList[node].end(); itr++){
-            if(visit[*itr])
+            if(visit[*itr]) // map<int,bool> 中默认的value为false
                 continue;
-            DFS(*itr);
+            DFSUtil(*itr);
+        }
+    }
+
+    void DFS(){
+        for(auto item : adjList){
+            if(!visit[item.first]) // 如果当前顶点没有被访问过，则对当前节点进行搜素
+                DFSUtil(item.first);
         }
     }
 private:
@@ -33,5 +40,5 @@ int main(){
     G.add_edge(2,0);
     G.add_edge(2,3);
     G.add_edge(3,3);
-    G.DFS(1);
+    G.DFS();
 }
