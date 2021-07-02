@@ -1,0 +1,3 @@
+[submodule "tools/cmake/cmake-examples"]
+	path = tools/cmake/cmake-examples
+	url = git@github.com:offline3/cmake-examples.git
