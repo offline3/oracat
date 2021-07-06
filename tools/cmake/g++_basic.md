@@ -164,7 +164,44 @@ gcc [-c|-S|-E] [-std=standard]
 	编译器优化选项分为4个级别，-O0表示没有优化，-O1为缺省值，建议使用-O2，-O3优化级别最高。
 ```
 
-**（8）其他选项**
+**（8）宏条件编译**
+
+C++中通常使用宏来实现条件编译，如下源文件
+
+```c++
+#include <iostream>
+
+int main(int argc, char *argv[])
+{
+   std::cout << "Hello Compile Flags!" << std::endl;
+
+   // only print if compile flag set
+#ifdef EX2
+  std::cout << "Hello Compile Flag EX2!" << std::endl;
+#endif
+
+#ifdef EX3
+  std::cout << "Hello Compile Flag EX3!" << std::endl;
+#endif
+
+   return 0;
+}
+```
+
+当希望定义宏`EX2`进行编译时，可使用
+
+```bash
+g++ -o main main.cpp -DEX2
+```
+
+执行可执行性文件，对应的输出为
+
+```
+Hello Compile Flags!
+Hello Compile Flag EX2!
+```
+
+**（9）其他选项**
 
 ```javascript
 -fpic
