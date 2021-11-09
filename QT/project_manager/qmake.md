@@ -4,7 +4,6 @@
 // c++ 条件编译
 #define shapeA
  
- 
 #if defined(shapeA)
 FORMS += \
     formA.ui
@@ -16,12 +15,9 @@ FORMS += \
 
 在pro文件中对应的方法
 
-```
+```qmake
 // .pro
- 
 DEFINES += SHAPE_A
- 
-#...
  
 contains(DEFINES,SHAPE_A){
     FORMS += formA.ui
@@ -30,3 +26,4 @@ contains(DEFINES,SHAPE_B){
     FORMS += formB.ui
 }
 ```
+
